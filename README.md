@@ -3,9 +3,9 @@
 When dealing with one programming language, docker works well to provide base images like (python, r, or nodejs), but it frequently becomes a mess when you want to two or more of these. E.g. you can install python on a nodejs image or vice versa, but in both cases you lose the ability to specify the version for the other.
 
 To address this, our base image provides a means to explicitly specify the version of:
-- node (installed with the help of nvm)
-- R (installed with the help of rig)
-- python (installed with the help of uv)
+- node (installed with the help of [nvm](https://github.com/nvm-sh/nvm))
+- R (installed with the help of [rig](https://github.com/r-lib/rig))
+- python (installed with the help of [uv](https://docs.astral.sh/uv/))
 
 If you don't specify it's version, it will not be installed.
 
