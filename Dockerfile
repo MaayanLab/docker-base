@@ -23,6 +23,8 @@ RUN set -x \
   && echo '. /entrypoint.sh' >> ~/.bash_env \
   && echo '. "/home/ubuntu/.bash_env"' >> ~/.bashrc \
   && touch /home/ubuntu/.sudo_as_admin_successful
+
+SHELL ["/bin/bash", "-c"]
 ENTRYPOINT [ "/bin/bash", "-c" ]
 CMD [ "bash" ]
 
