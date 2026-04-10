@@ -24,3 +24,7 @@ FROM maayanlab/base
 RUN PYTHON_VERSION=3.11 /install.sh
 CMD ["python"]
 ```
+
+## Future Directions
+- maybe it's possible to uninstall nvm/uv/rig after install for a smaller image
+- maybe it's possible to isolate node/python/r completely in their respective directory so that they can be installed in parallel with docker for better caching
