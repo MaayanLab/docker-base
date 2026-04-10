@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for f in $(find /root -maxdepth 2 -name install.sh); do
+for f in $(find /opt -maxdepth 2 -name install.sh); do
   bash "$f" &
 done
 

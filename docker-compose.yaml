@@ -3,17 +3,17 @@ services:
     build:
       context: .
       target: pre_installed
-    image: maayanlab/base:1.0.0
+    image: maayanlab/base:1.1.0
     platform: linux/amd64
   basic:
     build:
       context: .
       target: basic
-    image: maayanlab/base-basic:1.0.0
+    image: maayanlab/base-basic:1.1.0
     platform: linux/amd64
   python:
     build:
       context: .
       target: python
-    image: maayanlab/base-python:1.0.0
+    image: maayanlab/base-python:1.1.0
     platform: linux/amd64
