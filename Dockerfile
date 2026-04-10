@@ -26,8 +26,7 @@ RUN set -x \
   && touch /home/ubuntu/.sudo_as_admin_successful
 
 SHELL ["/bin/bash", "-c"]
-ENTRYPOINT [ "/bin/bash", "-c" ]
-CMD [ "bash" ]
+ENTRYPOINT [ "/bin/bash", "-c", "exec \"$@\"", "--" ]
 
 FROM base AS node_base
 # The node base uses nvm to install the specific version of nodejs specified later
