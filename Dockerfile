@@ -20,6 +20,7 @@ USER ubuntu
 WORKDIR /home/ubuntu
 ENV BASH_ENV=/home/ubuntu/.bash_env
 RUN set -x \
+  && echo 'shopt -s expand_aliases' >> ~/.bash_env \
   && echo '. /entrypoint.sh' >> ~/.bash_env \
   && echo '. "/home/ubuntu/.bash_env"' >> ~/.bashrc \
   && touch /home/ubuntu/.sudo_as_admin_successful
@@ -52,7 +53,7 @@ RUN set -x \
   && echo "export PATH=\$PATH:\$UV_INSTALL_DIR" >> /opt/python/entrypoint.sh \
   && echo "if [[ ! -z \"\$PYTHON_VERSION\" ]]; then" > /opt/python/install.sh \
   && echo "  uv venv --python \$PYTHON_VERSION" >> /opt/python/install.sh \
-  && echo "  echo \"test -f ~/.venv/bin/activate && . ~/.venv/bin/activate\" >> ~/.bash_env" >> /opt/python/install.sh \
+  && echo "  echo \"[ -f ~/.venv/bin/activate ] && . ~/.venv/bin/activate\" >> ~/.bash_env" >> /opt/python/install.sh \
   && echo "  echo \"alias pip='uv pip'\" >> ~/.bash_env" >> /opt/python/install.sh \
   && echo "fi" >> /opt/python/install.sh
 
