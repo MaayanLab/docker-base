@@ -79,8 +79,29 @@ RUN set -x \
   && echo "fi" >> /opt/R/install.sh \
   && chmod +x /opt/R/install.sh
 
+FROM base AS ubuntu_base
+# The ubuntu base installs deps in deps.txt
+USER root
+RUN mkdir -p /opt/ubuntu
+RUN set -x \
+  && echo "ubuntu ALL=(root) NOPASSWD: /opt/ubuntu/install.sh" > /etc/sudoers.d/ubuntu \
+  && echo "export PATH=\$PATH:/opt/ubuntu/bin" > /opt/ubuntu/entrypoint.sh \
+  && echo "#!/bin/bash" > /opt/ubuntu/install.sh \
+  && echo "if [[ \$EUID -ne 0 ]]; then" >> /opt/ubuntu/install.sh \
+  && echo "  sudo /opt/ubuntu/install.sh" >> /opt/ubuntu/install.sh \
+  && echo "else" >> /opt/ubuntu/install.sh \
+  && echo "  if [[ -f \"deps.txt\" ]]; then" >> /opt/ubuntu/install.sh \
+  && echo "    apt-get -y install $(grep -v '^#' deps.txt)" >> /opt/ubuntu/install.sh \
+  && echo "    rm -rf /var/lib/apt/lists/*" >> /opt/ubuntu/install.sh \
+  && echo "  fi" >> /opt/ubuntu/install.sh \
+  && echo "  chown -R ubuntu /home/ubuntu" >> /opt/ubuntu/install.sh \
+  && echo "fi" >> /opt/ubuntu/install.sh \
+  && chmod +x /opt/ubuntu/install.sh
+
 FROM base AS pre_installed
 # grab prepared directories
+COPY --from=ubuntu_base /opt/ubuntu /opt/ubuntu
+COPY --from=ubuntu_base /etc/sudoers.d/ubuntu /etc/sudoers.d/ubuntu
 COPY --from=python_base /opt/python /opt/python
 COPY --from=node_base /opt/node /opt/node
 COPY --from=r_base /opt/R /opt/R
@@ -92,4 +113,5 @@ CMD ["python"]
 
 FROM pre_installed AS basic
 # specify versions of everything
+RUN echo "git" >> deps.txt
 RUN NODE_VERSION=20 PYTHON_VERSION=3.11 R_VERSION=4.5.3 /install.sh
