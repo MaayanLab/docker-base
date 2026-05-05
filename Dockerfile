@@ -16,8 +16,9 @@ RUN chmod +x /entrypoint.sh
 ADD install.sh /install.sh
 RUN chmod +x /install.sh
 # This sources the entrypoint whenever bash runs (interactive or not)
-USER ubuntu
 WORKDIR /home/ubuntu
+RUN chown -R ubuntu /home/ubuntu
+USER ubuntu
 ENV BASH_ENV=/home/ubuntu/.bash_env
 RUN set -x \
   && echo 'shopt -s expand_aliases' >> ~/.bash_env \
