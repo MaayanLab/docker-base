@@ -41,6 +41,9 @@ RUN  echo "if [[ ! -z \"\$NODE_VERSION\" ]]; then" > /opt/node/install.sh \
   && echo "  . ~/.bash_env" >> /opt/node/install.sh \
   && echo "  nvm install \$NODE_VERSION" >> /opt/node/install.sh \
   && echo "  nvm use \$NODE_VERSION" >> /opt/node/install.sh \
+  && echo "  if [[ -f package.json ]]; then" >> /opt/node/install.sh \
+  && echo "    npm i" >> /opt/node/install.sh \
+  && echo "  fi" >> /opt/node/install.sh \
   && echo "fi" >> /opt/node/install.sh
 
 FROM base AS python_base
@@ -53,6 +56,11 @@ RUN set -x \
   && echo "export PATH=\$PATH:\$UV_INSTALL_DIR" >> /opt/python/entrypoint.sh \
   && echo "if [[ ! -z \"\$PYTHON_VERSION\" ]]; then" > /opt/python/install.sh \
   && echo "  uv venv --python \$PYTHON_VERSION" >> /opt/python/install.sh \
+  && echo "  if [[ -f uv.lock ]]; then" >> /opt/python/install.sh \
+  && echo "    uv sync" >> /opt/python/install.sh \
+  && echo "  elif [[ -f requirements.txt ]]; then" >> /opt/python/install.sh \
+  && echo "    uv pip install -r requirements.txt" >> /opt/python/install.sh \
+  && echo "  fi" >> /opt/python/install.sh \
   && echo "  echo \"[ -f ~/.venv/bin/activate ] && . ~/.venv/bin/activate\" >> ~/.bash_env" >> /opt/python/install.sh \
   && echo "  echo \"alias pip='uv pip'\" >> ~/.bash_env" >> /opt/python/install.sh \
   && echo "fi" >> /opt/python/install.sh
@@ -70,6 +78,9 @@ RUN set -x \
   && echo "#!/bin/bash" > /opt/R/install.sh \
   && echo "if [[ \$EUID -ne 0 ]]; then" >> /opt/R/install.sh \
   && echo "  sudo /opt/R/install.sh \$R_VERSION" >> /opt/R/install.sh \
+  && echo "  if [[ -f setup.R ]]; then" >> /opt/R/install.sh \
+  && echo "    R -e \"source('setup.R')\"" >> /opt/R/install.sh \
+  && echo "  fi" >> /opt/R/install.sh \
   && echo "else" >> /opt/R/install.sh \
   && echo "  export PATH=\$PATH:/opt/R/bin" >> /opt/R/install.sh \
   && echo "  export R_VERSION=\$1" >> /opt/R/install.sh \
